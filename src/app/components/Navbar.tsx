@@ -1,3 +1,4 @@
+"use client"
 import React from 'react';
 
 import AppBar from '@mui/material/AppBar';
@@ -7,38 +8,45 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
+import { Avatar, Container, Grid2, Stack, ThemeProvider } from '@mui/material';
+import HowToVoteIcon from '@mui/icons-material/HowToVote';
+import { darkTheme } from '@/app/theme/darkTheme';
+import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
+import AvatarImg from "@/app/assets/avatar.png"
 
 const Navbar = () => {
-    return(
-        <>
-            <Box sx={{ flexGrow: 1 }}>
-            <AppBar component="nav">
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            sx={{ mr: 2, display: { sm: 'none' } }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
-          >
-            MUI
-          </Typography>
-          <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-            <Button sx={{ color: '#fff' }}>
-                a
-              </Button>
-          </Box>
-        </Toolbar>
-      </AppBar>
-            </Box>
-        </>
-    )
+  const { isAuthenticated } = useKindeBrowserClient();
+  const isLoggedIn = isAuthenticated;
+
+  return(
+    <>
+      <ThemeProvider theme={darkTheme}>
+        <AppBar position='static' sx={{ bgcolor: "background.default", p: 1 }}>
+            <Container maxWidth="lg">
+              <Toolbar>
+                <IconButton size='large' color='inherit' href='#'>
+                  <HowToVoteIcon />
+                </IconButton>
+                <Typography variant='h6' component="a" href='#' sx={{ textDecoration: "none", flexGrow: 1, }} color='inherit'>
+                  QuickPoll
+                </Typography>
+
+                {
+                  isLoggedIn ? (
+                    <Avatar alt='avatar' src={AvatarImg.src} />
+                  ) : (
+                    <Stack direction="row" spacing={2}>
+                      <Button variant='outlined' href='/api/auth/login'>Log in</Button>
+                      <Button variant='contained' href='/api/auth/register'>Sign up</Button>
+                    </Stack>
+                  )
+                }
+              </Toolbar>
+            </Container>
+          </AppBar>
+      </ThemeProvider>
+    </>
+  )
 }
 
 export default Navbar
