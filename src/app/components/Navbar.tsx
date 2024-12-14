@@ -27,7 +27,7 @@ const Navbar = () => {
                 <IconButton size='large' color='inherit' href='#'>
                   <HowToVoteIcon />
                 </IconButton>
-                <Typography variant='h6' component="a" href='#' sx={{ textDecoration: "none", flexGrow: 1, }} color='inherit'>
+                <Typography variant='h6' component="a" href='#' sx={{ textDecoration: "none", flexGrow: 1, }} color='inherit' className='inter-300'>
                   QuickPoll
                 </Typography>
 
@@ -36,8 +36,8 @@ const Navbar = () => {
                     <Avatar alt='avatar' src={AvatarImg.src} />
                   ) : (
                     <Stack direction="row" spacing={2}>
-                      <Button variant='outlined' href='/api/auth/login'>Log in</Button>
-                      <Button variant='contained' href='/api/auth/register'>Sign up</Button>
+                      <Button variant='outlined' href='/api/auth/login' className='inter-600'>Log in</Button>
+                      <Button variant='contained' href='/api/auth/register' className='inter-600'>Sign up</Button>
                     </Stack>
                   )
                 }
