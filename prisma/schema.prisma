@@ -25,9 +25,8 @@ model User{
 model Poll {
   id          String     @id @default(uuid()) // Unique identifier for each poll
   question    String     // The poll question
-  description String?    // Optional description of the poll
+  linkId      String
   createdAt   DateTime   @default(now())      // Timestamp for when the poll was created
-  expiresAt   DateTime?  // Optional expiration date
   options     Option[]   // Relationship to poll options
   votes       Vote[]     // Relationship to votes
 }

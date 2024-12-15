@@ -4,6 +4,7 @@ import { Button, Container, Divider, FormControlLabel, Grid2, Switch, TextField,
 import React, { useState } from 'react'
 import { darkTheme } from '@/app/theme/darkTheme'
 import CreateIcon from '@mui/icons-material/Create';
+import { createPoll } from '@/app/server/actions';
 
 const Dashboard = () => {
     const [numberOfAnswers, setNumberOfAnswers] = useState(2);
@@ -13,7 +14,7 @@ const Dashboard = () => {
     const [answer2, setAnswer2] = useState('');
 
     const handleCreatePoll = () => {
-        console.log(question)
+        createPoll(question, answer1, answer2);
     }
 
     return (
