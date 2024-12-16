@@ -18,7 +18,6 @@ const generateRandomString = (): string => {
 export const createPoll = async (q: string, a1: string, a2: string) => {
     let linkedId = generateRandomString();
 
-
     await prisma.poll.create({
         data: {
             question: q,
@@ -64,19 +63,35 @@ export const voteOnPoll = async (pollId: string, optionId: string) =>{
         let result = "Voted!";
 
         return {
-            props: {
-                result
-            }
+            result: result
         }
     }
     catch {
         let result = "You have already voted!";
 
         return {
-            props: {
-                result
-            }
+            result: result
         }
     }
 }
 
+export const getVotes = async (pollId: string, optionAId: string, optionBId: string) => {
+    const optionAResult = await prisma.vote.count({
+        where: {
+            pollId: pollId,
+            optionId: optionAId
+        }
+    });
+
+    const optionBResult = await prisma.vote.count({
+        where: {
+            pollId: pollId,
+            optionId: optionBId
+        }
+    });
+
+    return {
+        optionAResult: optionAResult,
+        optionBResult: optionBResult
+    }
+}

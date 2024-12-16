@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react'
 import { darkTheme } from '@/app/theme/darkTheme'
 import { PieChart } from '@mui/x-charts/PieChart';
 import { useParams } from 'next/navigation';
-import { getPollData } from '@/app/server/actions';
+import { getPollData, getVotes, voteOnPoll } from '@/app/server/actions';
 import { poll } from '../interfaces/interfaces';
 
 const PollDashboard = () => {
@@ -16,6 +16,16 @@ const PollDashboard = () => {
     const [loading, setLoading] = useState(true);
 
     const [optionSelected, setOptionSelected] = useState('');
+
+    const [voteResult, setVoteResult] = useState('test');
+
+    const [optionAResult, setOptionAResult] = useState(1);
+    const [optionBResult, setOptionBResult] = useState(1);
+
+    const votes = [
+        { id: 0, value: optionAResult, label: poll?.options[0].text },
+        { id: 1, value: optionBResult, label: poll?.options[1].text }
+    ]
 
     useEffect(() => {
         const getPoll = async () => {
@@ -29,23 +39,37 @@ const PollDashboard = () => {
         getPoll();
     }, [])
 
-    const handleVote = () => {
-        console.log(optionSelected)
+    useEffect(() => {
+        if (!poll) return
+
+        const getVotesFE = async () => {
+            const { optionAResult, optionBResult } = await getVotes(poll?.id, poll?.options[0].id, poll?.options[1].id);
+
+            setOptionAResult(optionAResult);
+            setOptionBResult(optionBResult);
+        }
+
+        getVotesFE()
+    }, [loading])
+
+    const handleVote = async () => {
+        if (!poll) return
+
+        const { result } = await voteOnPoll(poll?.id, optionSelected);
+        setVoteResult(result)
     }
-    
-    console.log(poll)
 
     if (loading) return <p>Loading</p>
+
+    console.log(optionAResult)
+    console.log(optionBResult)
 
     return(
         <>
             <ThemeProvider theme={darkTheme}>
                 <Grid2 bgcolor="background.paper">
                     <Container maxWidth="lg" sx={{ p: 1 }}>
-                        <Grid2 sx={{ p: 4 }}>
-                            
-
-                            <div>
+                        <Grid2 sx={{ p: 4 }}> 
                             <FormControl>
                                 <FormLabel id="demo-controlled-radio-buttons-group" className='text-white'>
                                     <Typography className='inter-200' variant='h4' color='text.primary'>
@@ -63,8 +87,10 @@ const PollDashboard = () => {
                                 </RadioGroup>
 
                                 <Button variant='contained' className='mt-2' onClick={handleVote}>Submit</Button>
-                            </FormControl>
-                            </div>
+                            </FormControl> 
+                        </Grid2>
+                        <Grid2 size={12} sx={{ paddingX: 4 }}>
+                            <Typography variant='h6' color='success.main' className='inter-200'> { voteResult } </Typography>
                         </Grid2>
 
                         <Box
@@ -73,15 +99,18 @@ const PollDashboard = () => {
                             alignItems="center"
                             sx={{ p: 4 }}
                         >
-                        {/*<PieChart
+                        <PieChart
                             series={[
                                 {
-                                data: poll,
+                                data: [
+                                    { id: 0, value: optionAResult, label: poll?.options[0].text },
+                                    { id: 1, value: optionBResult, label: poll?.options[1].text }
+                                ]
                                 },
                             ]}
                             width={400}
                             height={200}
-                        />*/}
+                        />
                         </Box>
                     </Container>
                 </Grid2>
