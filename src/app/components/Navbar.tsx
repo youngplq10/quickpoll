@@ -24,10 +24,10 @@ const Navbar = () => {
         <AppBar position='static' sx={{ bgcolor: "background.default", p: 1 }}>
             <Container maxWidth="lg">
               <Toolbar>
-                <IconButton size='large' color='inherit' href='#'>
+                <IconButton size='large' color='inherit' href='/'>
                   <HowToVoteIcon />
                 </IconButton>
-                <Typography variant='h6' component="a" href='#' sx={{ textDecoration: "none", flexGrow: 1, }} color='inherit' className='inter-300'>
+                <Typography variant='h6' component="a" href='/' sx={{ textDecoration: "none", flexGrow: 1, }} color='inherit' className='inter-300'>
                   QuickPoll
                 </Typography>
 

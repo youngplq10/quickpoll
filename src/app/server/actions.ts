@@ -51,3 +51,32 @@ export const getPollData = async (pollId: string) => {
     }
 }
 
+export const voteOnPoll = async (pollId: string, optionId: string) =>{
+    try{
+        await prisma.vote.create({
+            data: {
+                pollId: pollId,
+                optionId: optionId,
+                voterId: "test"
+            }
+        })
+
+        let result = "Voted!";
+
+        return {
+            props: {
+                result
+            }
+        }
+    }
+    catch {
+        let result = "You have already voted!";
+
+        return {
+            props: {
+                result
+            }
+        }
+    }
+}
+
