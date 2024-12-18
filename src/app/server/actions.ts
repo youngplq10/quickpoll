@@ -50,13 +50,22 @@ export const getPollData = async (pollId: string) => {
     }
 }
 
-export const voteOnPoll = async (pollId: string, optionId: string) =>{
+export const voteOnPoll = async (pollId: string, optionId: string, voterId: string) =>{
+    const hasVoted = await prisma.vote.findMany({
+        where: {
+            pollId: pollId,
+            voterId: voterId
+        }
+    })
+
+    if( hasVoted.length > 0 ) return { result: "has voted laready" }
+
     try{
         await prisma.vote.create({
             data: {
                 pollId: pollId,
                 optionId: optionId,
-                voterId: "test"
+                voterId: voterId
             }
         })
 
@@ -66,13 +75,12 @@ export const voteOnPoll = async (pollId: string, optionId: string) =>{
             result: result
         }
     }
-    catch {
-        let result = "You have already voted!";
-
+    catch (error) {
         return {
-            result: result
+            result: error
         }
     }
+
 }
 
 export const getVotes = async (pollId: string, optionAId: string, optionBId: string) => {

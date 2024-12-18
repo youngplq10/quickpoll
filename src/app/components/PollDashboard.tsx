@@ -7,8 +7,11 @@ import { PieChart } from '@mui/x-charts/PieChart';
 import { useParams } from 'next/navigation';
 import { getPollData, getVotes, voteOnPoll } from '@/app/server/actions';
 import { poll } from '../interfaces/interfaces';
+import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
 
 const PollDashboard = () => {
+    const { user } = useKindeBrowserClient();
+
     const params = useParams();
     const pollId: string = params.pollId.toString();
 
@@ -50,13 +53,17 @@ const PollDashboard = () => {
         }
 
         getVotesFE()
-    }, [loading])
+    }, [loading, voteResult])
 
     const handleVote = async () => {
         if (!poll) return
 
-        const { result } = await voteOnPoll(poll?.id, optionSelected);
-        setVoteResult(result)
+        if (user !== null){
+            const { result } = await voteOnPoll(poll?.id, optionSelected, user.id);
+            setVoteResult(result)
+        } else {
+            alert("log in")
+        }
     }
 
     if (loading) return <p>Loading</p>
@@ -86,7 +93,7 @@ const PollDashboard = () => {
                                     <FormControlLabel value={ poll?.options[1].id } className='text-white inter-200' control={<Radio />} label={ poll?.options[1].text } />
                                 </RadioGroup>
 
-                                <Button variant='contained' className='mt-2' onClick={handleVote}>Submit</Button>
+                                <Button variant='contained' className='mt-2' onClick={handleVote}>Vote</Button>
                             </FormControl> 
                         </Grid2>
                         <Grid2 size={12} sx={{ paddingX: 4 }}>
