@@ -58,7 +58,7 @@ export const voteOnPoll = async (pollId: string, optionId: string, voterId: stri
         }
     })
 
-    if( hasVoted.length > 0 ) return { result: "has voted laready" }
+    if( hasVoted.length > 0 ) return { result: "You have already voted!", alertType: "error" }
 
     try{
         await prisma.vote.create({
@@ -70,9 +70,11 @@ export const voteOnPoll = async (pollId: string, optionId: string, voterId: stri
         })
 
         let result = "Voted!";
+        let alertType = "success";
 
         return {
-            result: result
+            result: result,
+            alertType: alertType
         }
     }
     catch (error) {

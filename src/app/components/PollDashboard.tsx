@@ -1,6 +1,6 @@
 "use client"
 
-import { Box, Button, Container, FormControl, FormControlLabel, FormLabel, Grid2, Radio, RadioGroup, ThemeProvider, Typography } from '@mui/material'
+import { Alert, Backdrop, Box, Button, CircularProgress, Container, FormControl, FormControlLabel, FormLabel, Grid2, Radio, RadioGroup, ThemeProvider, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { darkTheme } from '@/app/theme/darkTheme'
 import { PieChart } from '@mui/x-charts/PieChart';
@@ -20,15 +20,26 @@ const PollDashboard = () => {
 
     const [optionSelected, setOptionSelected] = useState('');
 
-    const [voteResult, setVoteResult] = useState('test');
+    const [voteResult, setVoteResult] = useState('');
 
     const [optionAResult, setOptionAResult] = useState(1);
     const [optionBResult, setOptionBResult] = useState(1);
+
+    const [logInDialogBox, setLogInDialogBox] = useState(false)
+
+    const [alertVisibility, setAlertVisibility] = useState("hidden");
+    const [alertType, setAlertType] = useState<'success' | 'error' | 'warning' | 'info'>('success');
 
     const votes = [
         { id: 0, value: optionAResult, label: poll?.options[0].text },
         { id: 1, value: optionBResult, label: poll?.options[1].text }
     ]
+
+    const handleVoteResult = (result: string, alertType: string) => {
+        setAlertVisibility("visible");
+        setVoteResult(result);
+        setAlertType(alertType)
+    }
 
     useEffect(() => {
         const getPoll = async () => {
@@ -59,17 +70,14 @@ const PollDashboard = () => {
         if (!poll) return
 
         if (user !== null){
-            const { result } = await voteOnPoll(poll?.id, optionSelected, user.id);
-            setVoteResult(result)
+            const { result, alertType } = await voteOnPoll(poll?.id, optionSelected, user.id);
+            handleVoteResult(result, alertType)
         } else {
-            alert("log in")
+            setLogInDialogBox(true)
         }
     }
 
     if (loading) return <p>Loading</p>
-
-    console.log(optionAResult)
-    console.log(optionBResult)
 
     return(
         <>
@@ -96,9 +104,6 @@ const PollDashboard = () => {
                                 <Button variant='contained' className='mt-2' onClick={handleVote}>Vote</Button>
                             </FormControl> 
                         </Grid2>
-                        <Grid2 size={12} sx={{ paddingX: 4 }}>
-                            <Typography variant='h6' color='success.main' className='inter-200'> { voteResult } </Typography>
-                        </Grid2>
 
                         <Box
                             display="flex"
@@ -119,9 +124,28 @@ const PollDashboard = () => {
                             height={200}
                         />
                         </Box>
+                        <Grid2 size={12} sx={{ paddingX: 4, visibility: alertVisibility }}>
+                            <Alert severity={alertType}> {voteResult} </Alert>
+                        </Grid2>
                     </Container>
                 </Grid2>
+
+                
             </ThemeProvider>
+
+            <Backdrop
+                sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
+                open={logInDialogBox}
+                onClick={() => setLogInDialogBox(false)}
+            >
+                <Container maxWidth="xs" sx={{ p: 1 }}>
+                    <Grid2 bgcolor="background.paper" sx={{ py: 5,  textAlign: 'center' }}>
+                        <Typography variant='h5' color='text.secondary' className='inter-200'> To vote you need to log in </Typography>
+                        <Button href='/api/auth/login' className='inter-700 mt-3' variant='outlined'>Log in</Button> <br/>
+                        <Button href='/api/auth/register' className='inter-700 mt-3' variant='contained'>Sign in</Button>
+                    </Grid2>
+                </Container>
+            </Backdrop>
         </>
     )
 }
