@@ -31,8 +31,8 @@ const PollDashboard = () => {
     const [alertType, setAlertType] = useState<'success' | 'error' | 'warning' | 'info'>('success');
 
     const votes = [
-        { id: 0, value: optionAResult, label: poll?.options[0].text },
-        { id: 1, value: optionBResult, label: poll?.options[1].text }
+        { id: 0, value: optionAResult > 0 || optionBResult > 0 ? optionAResult : 1, label: poll?.options[0].text },
+        { id: 1, value: optionBResult > 0 || optionAResult > 0 ? optionBResult : 1, label: poll?.options[1].text }
     ]
 
     const handleVoteResult = (result: string, alertType: string) => {
@@ -114,14 +114,12 @@ const PollDashboard = () => {
                         <PieChart
                             series={[
                                 {
-                                data: [
-                                    { id: 0, value: optionAResult, label: poll?.options[0].text },
-                                    { id: 1, value: optionBResult, label: poll?.options[1].text }
-                                ]
+                                data: votes
                                 },
                             ]}
                             width={400}
                             height={200}
+                            
                         />
                         </Box>
                         <Grid2 size={12} sx={{ paddingX: 4, visibility: alertVisibility }}>
