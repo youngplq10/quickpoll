@@ -3,6 +3,7 @@ export interface poll{
         id: string;
         text: string;
         pollId: string;
+        user_id: string;
     }[];
     votes: {
         id: string;

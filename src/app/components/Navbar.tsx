@@ -8,15 +8,20 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
-import { Avatar, Container, Grid2, Stack, ThemeProvider } from '@mui/material';
+import { Avatar, Container, Grid2, Stack, ThemeProvider, SpeedDialAction, SpeedDialIcon, SpeedDial, Link} from '@mui/material';
 import HowToVoteIcon from '@mui/icons-material/HowToVote';
 import { darkTheme } from '@/app/theme/darkTheme';
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
 import AvatarImg from "@/app/assets/avatar.png"
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import LogoutIcon from '@mui/icons-material/Logout';
+import { redirect } from 'next/navigation';
 
 const Navbar = () => {
   const { isAuthenticated } = useKindeBrowserClient();
   const isLoggedIn = isAuthenticated;
+
+  console.log(isLoggedIn)
 
   return(
     <>
@@ -33,7 +38,33 @@ const Navbar = () => {
 
                 {
                   isLoggedIn ? (
-                    <Avatar alt='avatar' src={AvatarImg.src} />
+                    <>
+                      
+                      <SpeedDial
+                        ariaLabel="SpeedDial playground example"
+                        hidden={false}
+                        icon={<Avatar alt='avatar' src={AvatarImg.src} />}
+                        direction="left"
+                        sx={{
+                          '.MuiSpeedDial-fab': {
+                            boxShadow: 'none',
+                            backgroundColor: 'transparent',
+                            '&:hover': {
+                              backgroundColor: 'transparent',
+                            },
+                          },
+                        }}
+                      >
+                        <SpeedDialAction
+                          icon={<Link href='/dashboard' color='inherit' underline='none'><DashboardIcon /></Link>}
+                          tooltipTitle="Dashboard"
+                        />
+                        <SpeedDialAction
+                          icon={<Link href='/api/auth/logout' color='inherit' underline='none'><LogoutIcon /></Link>}
+                          tooltipTitle="Logout"
+                        />
+                      </SpeedDial>
+                    </>
                   ) : (
                     <Stack direction="row" spacing={2}>
                       <Button variant='outlined' href='/api/auth/login' className='inter-600'>Log in</Button>

@@ -15,13 +15,14 @@ const generateRandomString = (): string => {
     return result;
 }
 
-export const createPoll = async (q: string, a1: string, a2: string) => {
+export const createPoll = async (q: string, a1: string, a2: string, user_id: string) => {
     let linkedId = generateRandomString();
 
     await prisma.poll.create({
         data: {
             question: q,
             linkId: linkedId,
+            user_id: user_id,
             options: {
                 create: [
                     { text: a1 },
@@ -104,4 +105,40 @@ export const getVotes = async (pollId: string, optionAId: string, optionBId: str
         optionAResult: optionAResult,
         optionBResult: optionBResult
     }
+}
+
+export const getMyPolls = async (user_id: string) => {
+    const polls = await prisma.poll.findMany({
+        where: {
+            user_id: user_id
+        },
+        include: {
+            options: true,
+            votes: true
+        }
+    })
+
+    return {
+        polls: polls
+    }
+}
+
+export const removePoll = async (pollId: string) => {
+    await prisma.vote.deleteMany({
+        where: {
+            pollId: pollId
+        }
+    })
+
+    await prisma.option.deleteMany({
+        where: {
+            pollId: pollId
+        }
+    })
+
+    await prisma.poll.delete({
+        where: { 
+            id: pollId 
+        },
+    });
 }

@@ -5,6 +5,7 @@ import React, { useState } from 'react'
 import { darkTheme } from '@/app/theme/darkTheme'
 import CreateIcon from '@mui/icons-material/Create';
 import { createPoll } from '@/app/server/actions';
+import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
 
 const Dashboard = () => {
     const [numberOfAnswers, setNumberOfAnswers] = useState(2);
@@ -13,8 +14,10 @@ const Dashboard = () => {
     const [answer1, setAnswer1] = useState('');
     const [answer2, setAnswer2] = useState('');
 
+    const { user } = useKindeBrowserClient();
+
     const handleCreatePoll = () => {
-        createPoll(question, answer1, answer2);
+        createPoll(question, answer1, answer2, user?.id || "");
     }
 
     return (

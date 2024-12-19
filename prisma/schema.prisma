@@ -21,6 +21,7 @@ model User{
 
 model Poll {
   id          String     @id @default(uuid()) // Unique identifier for each poll
+  user_id     String     @default("")
   question    String     // The poll question
   linkId      String
   createdAt   DateTime   @default(now())      // Timestamp for when the poll was created

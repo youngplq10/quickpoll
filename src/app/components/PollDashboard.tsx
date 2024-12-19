@@ -8,6 +8,7 @@ import { useParams } from 'next/navigation';
 import { getPollData, getVotes, voteOnPoll } from '@/app/server/actions';
 import { poll } from '../interfaces/interfaces';
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
+import Loading from './Loading';
 
 const PollDashboard = () => {
     const { user } = useKindeBrowserClient();
@@ -28,7 +29,7 @@ const PollDashboard = () => {
     const [logInDialogBox, setLogInDialogBox] = useState(false)
 
     const [alertVisibility, setAlertVisibility] = useState("hidden");
-    const [alertType, setAlertType] = useState<'success' | 'error' | 'warning' | 'info'>('success');
+    const [alertType, setAlertType] = useState<'success' | 'error'>('success');
 
     const votes = [
         { id: 0, value: optionAResult > 0 || optionBResult > 0 ? optionAResult : 1, label: poll?.options[0].text },
@@ -77,7 +78,7 @@ const PollDashboard = () => {
         }
     }
 
-    if (loading) return <p>Loading</p>
+    if (loading) return <Loading />
 
     return(
         <>
